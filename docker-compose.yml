@@ -1,0 +1,29 @@
+services:
+    web:
+        image: shinsenter/laravel:latest
+        volumes:
+            - .:/var/www/html:z
+        ports:
+            - 9000:8000
+        environment:
+            - APP_USER=${USER}
+            - APP_UID=$(id -u)
+            - APP_GID=$(id -g)
+        depends_on:
+            - db
+        command: php artisan serve --host=0.0.0.0 --port=8000
+
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_USER=${DB_USERNAME}
+            - POSTGRES_PASSWORD=${DB_PASSWORD}
+            - POSTGRES_DB=${DB_DATABASE}
+        ports:
+            - 9001:${DB_PORT}
+    adminer:
+        image: adminer
+        ports:
+            - 9002:8080
+        depends_on:
+            - db
